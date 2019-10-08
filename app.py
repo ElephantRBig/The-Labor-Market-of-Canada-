@@ -1,17 +1,18 @@
 import numpy as np
 import pandas as pd
+import flask
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine, func
 
-from flask import Flask, jsonify, render_template
-from flask_sqlalchemy import SQLALchemy
+from flask import Flask, jsonify
+
 
 #################################################
 # Database Setup
 #################################################
-engine = create_engine("postgresql://postgres:postgres@localhost:5432/Canadian_Stats")
+engine = create_engine("postgres://polgsxgh:3xbFEZ_1YSBe_GnV44A5BL3NnJJtimHj@salt.db.elephantsql.com:5432/polgsxgh")
 
 # reflect an existing database into a new model
 Base = automap_base()
@@ -22,12 +23,12 @@ Base.prepare(engine, reflect=True)
 Stats = Base.classes
 
 # Create our session (link) from Python to the DB
-db = SQLALchemy(app)
+
 
 #################################################
 # Flask Setup
 #################################################
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 
 #################################################
@@ -37,7 +38,7 @@ app = Flask(__name__)
 def index():
     """ Displays the index page accessible at '/'
     """
-    return render_template('index.html')
+    return flask.render_template('index.html')
 
 
 @app.route("/")
@@ -58,7 +59,9 @@ def welcome():
         f"/canada_labour_market/tax_revenue_Provincial<br/>"
         f"/canada_labour_market/unemployment_Canada<br/>"
         f"/canada_labour_market/unemployment_per_Provincial<br/>"
+        f"/canada_labour_market/wages_Canada<br/>"
     )
+
 
 @app.route('/canada_labour_market/wages')
 def wages():
@@ -153,3 +156,4 @@ def unemployment_per_Provincial():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    app.run(host= '0.0.0.0')
