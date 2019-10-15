@@ -5,8 +5,9 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine, func
+from flask_cors import CORS
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 
 #################################################
@@ -29,16 +30,27 @@ Stats = Base.classes
 # Flask Setup
 #################################################
 app = flask.Flask(__name__)
+CORS(app)
 
 
 #################################################
 # Flask Routes
 #################################################
+
 @app.route('/index')
 def index():
     """ Displays the index page accessible at '/'
     """
-    return flask.render_template('index.html')
+    wages = pd.read_sql('SELECT * FROM wages', engine)
+    cpicanada = pd.read_sql('SELECT * FROM cpicanada', engine)
+
+    data = {"wages": wages, "cpicanada": cpicanada}
+
+    return render_template('index.html')
+
+@app.route('/app')
+def script():
+    return render_template('app.js')
 
 
 @app.route("/")
